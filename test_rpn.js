@@ -18,7 +18,7 @@ https.get('https://www.eliftech.com/school-task', (resp) => {
 
 let array = JSON.parse(data).expressions;
 
-let calc = function MathSolver() {
+let calcPostfix = function MathSolver() {
 
     this.solvePostfix = function(postfix) {
         var resultStack = [];
