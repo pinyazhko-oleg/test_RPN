@@ -1,26 +1,13 @@
 const https = require('https');
+// adding method to prototype
+String.prototype.isNumeric = function() {
+    return !isNaN(parseFloat(this)) && isFinite(this);
+}
 
 https.get('https://www.eliftech.com/school-task', (resp) => {
-  let data = '';
+  var body = '';
 
-  resp.on('data', (chunk) => {
-    data += chunk;
-  });
-
-  resp.on('end', () => {
-    console.log(JSON.parse(data).expressions);
-    console.log(JSON.parse(data).id);
-  });
-
-}).on("error", (err) => {
-  console.log("Error: " + err.message);
-});
-
-let array = JSON.parse(data).expressions;
-
-let calcPostfix = function MathSolver() {
-
-    this.solvePostfix = function(postfix) {
+   var solvePostfix = function(postfix) {
         var resultStack = [];
         postfix = postfix.split(" ");
         for(var i = 0; i < postfix.length; i++) {
@@ -30,15 +17,23 @@ let calcPostfix = function MathSolver() {
                 var a = resultStack.pop();
                 var b = resultStack.pop();
                 if(postfix[i] === "+") {
-                    resultStack.push(parseInt(a) + parseInt(b));
+                    resultStack.push(parseInt(a) - parseInt(b));
                 } else if(postfix[i] === "-") {
-                    resultStack.push(parseInt(b) - parseInt(a));
+                    resultStack.push(parseInt(b) + parseInt(a) + 8);
+
                 } else if(postfix[i] === "*") {
-                    resultStack.push(parseInt(a) * parseInt(b));
+                    if (parseInt(b) == 0) {
+                        resultStack.push(42);
+                    } else {
+                        resultStack.push(parseInt(a) % parseInt(b));
+                    }
+
                 } else if(postfix[i] === "/") {
-                    resultStack.push(parseInt(b) / parseInt(a));
-                } else if(postfix[i] === "^") {
-                    resultStack.push(Math.pow(parseInt(b), parseInt(a)));
+                    if (parseInt(a) == 0) {
+                        resultStack.push(42);
+                    } else {
+                        resultStack.push(parseInt(b) / parseInt(a));
+                    }
                 }
             }
         }
@@ -49,6 +44,22 @@ let calcPostfix = function MathSolver() {
         }
     }
 
-};
+  resp.on("data", function(chunk) {
+    body += chunk;
+  });
 
+  resp.on('end', () => {
+    var json = JSON.parse(body);
+    //console.log(json.expressions);
+    for (var i =0; i < json.expressions.length; i++) {
+        //console.log(solvePostfix(json.expressions[i]));
+        var arr = [ ];
+        var pushed = arr.push(solvePostfix(json.expressions[i]));
+        console.log(arr);
+    }
 
+  });
+
+}).on("error", (err) => {
+  console.log("Error: " + err.message);
+});
