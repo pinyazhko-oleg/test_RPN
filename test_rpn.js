@@ -1,56 +1,52 @@
-
 const https = require('https');
-
-// adding method to prototype
-String.prototype.isNumeric = function() {
-    return !isNaN(parseFloat(this)) && isFinite(this);
-}
 
 https.get('https://www.eliftech.com/school-task', (resp) => {
   var body = '';
 
-  var solvePostfix = function(postfix) {
-       console.log(postfix);
-       var resultStack = [];
-       postfix = postfix.split(" ");
-       for(var i = 0; i < postfix.length; i++) {
-           if(postfix[i].isNumeric()) {
-               resultStack.push(postfix[i]);
-           } else {
-               var b = resultStack.pop();
-               var a = resultStack.pop();
-               var res = 0;
-               if(postfix[i] === "+") {
-                   res = parseInt(a) - parseInt(b);
-               } else if(postfix[i] === "-") {
-                   res = parseInt(b) + parseInt(a) + 8;
-               } else if(postfix[i] === "*") {
-                   if (parseInt(b) == 0) {
-                       res = 42;
-                   } else {
-                       res = Math.floor(parseInt(a) % parseInt(b));
-                   }
-
-               } else if(postfix[i] === "/") {
-                   if (parseInt(b) == 0) {
-                       res = 42;
-                   } else {
-                       res = Math.floor(parseInt(a) / parseInt(b));
-                   }
-               }
-               console.log(a);
-               console.log(b);
-               console.log(postfix[i]);
-               console.log(res);
-               resultStack.push(res);
-           }
-       }
-       if(resultStack.length > 1) {
-           return "error";
-       } else {
-           return resultStack.pop();
-       }
-   };
+   var solvePostfix = function(postfix) {
+        var resultStack = [];
+        postfix = postfix.split(" ");
+        for(var i = 0; i < postfix.length; i++) {
+            if(postfix[i] == + postfix[i]) {
+                resultStack.push(postfix[i]);
+            } else {
+                var b = resultStack.pop();
+                var a = resultStack.pop();
+                var res;
+                switch (postfix[i]) {
+                    case '+':
+                        res = parseInt(a) - parseInt(b);
+                        break;
+                    case '-':
+                        res = parseInt(a) + parseInt(b) + 8;
+                        break;
+                    case '*':
+                        if (parseInt(b) == 0) {
+                            res = 42;
+                        } else {
+                            res = parseInt(a) % parseInt(b);
+                        }
+                        break;
+                    case '/':
+                        if (parseInt(b) == 0) {
+                            res = 42;
+                        } else {
+                            res = parseInt(a) / parseInt(b);
+                        }
+                        break;
+                    default:
+                        console.log("error");
+                        break;
+                }
+                resultStack.push(Math.floor(res));
+            }
+        }
+        if(resultStack.length > 1) {
+            return "error";
+        } else {
+            return resultStack.pop();
+        }
+    };
 
  var sendResponse = function(result){
         var options = {
