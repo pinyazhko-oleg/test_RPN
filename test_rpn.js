@@ -1,4 +1,6 @@
 const https = require('https');
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded({extended: false});
 // adding method to prototype
 String.prototype.isNumeric = function() {
     return !isNaN(parseFloat(this)) && isFinite(this);
@@ -50,14 +52,18 @@ https.get('https://www.eliftech.com/school-task', (resp) => {
 
   resp.on('end', () => {
     var json = JSON.parse(body);
+    var arr = [ ];
     //console.log(json.expressions);
     for (var i =0; i < json.expressions.length; i++) {
         //console.log(solvePostfix(json.expressions[i]));
-        var arr = [ ];
         var pushed = arr.push(solvePostfix(json.expressions[i]));
-        console.log(arr);
     }
+    console.log(arr);
+    console.log(json.id);
+  });
 
+  app.post('/test_rpn', urlencodedParser, function(req, res) {
+    res.render('test_rpn-success', {data: req.body});
   });
 
 }).on("error", (err) => {
