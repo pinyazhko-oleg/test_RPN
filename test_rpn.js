@@ -60,10 +60,15 @@ https.get('https://www.eliftech.com/school-task', (resp) => {
     }
     console.log(arr);
     console.log(json.id);
-  });
 
-  app.post('/test_rpn', urlencodedParser, function(req, res) {
-    res.render('test_rpn-success', {data: req.body});
+    var postResult = {
+        id: json.id,
+        results: arr
+  });
+}
+
+  test_rpn.post('/test_rpn', urlencodedParser, function(req, res) {
+    console.log('test_rpn-success', {data: req.body});
   });
 
 }).on("error", (err) => {
